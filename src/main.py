@@ -1,8 +1,10 @@
 import itertools
+from symbol import yield_expr
 import numpy
 import simpy
 from simpy.core import EmptySchedule
 from simpy.resources.resource import PriorityResource, PriorityRequest
+from src.PriorityStore import PriorityStore
 
 LAMBDA = 10
 SIM_TIME = 1000
@@ -35,6 +37,7 @@ class Task(object):
     def run(self):
         with PriorityRequest(self.cpu.cpu_obj, priority=1) as cpu_obj:
             yield cpu_obj
+            print 'externally captured cpu_obj'
 
             yield self.env.process(self.process())
 
@@ -50,6 +53,9 @@ class Task(object):
     def processed(self):
         return self.T <= 0
 
+    def __lt__(self, other):
+        return self.T < other.T
+
 
 class CPU(object):
     def __init__(self, env, buffer_size):
@@ -63,9 +69,9 @@ class CPU(object):
         self.env = env
         self.cpu_obj = simpy.PriorityResource(env, capacity=1)
 
-        self.queue = simpy.Store(env)  # external queue
+        # self.queue = simpy.Store(env)  # external queue
 
-        self.buffer = simpy.Store(env, buffer_size)  # internal queue # TODO: make it a priority queue
+        self.buffer = PriorityStore(env, buffer_size)  # internal queue
         self.buffer_filled = env.event()
 
         self.action = env.process(self.run())
@@ -81,14 +87,12 @@ class CPU(object):
                 yield req
                 print 'captured cpu_obj'
 
-                task = yield self.buffer.get()
-                print "task #%d is out of buffer. T = %d" % (task.id, task.T)
+                task = yield self.get_from_buffer().next()
 
                 yield self.env.process(task.process())
 
                 if not task.processed():
                     yield self.env.process(self.add_to_buffer(task))
-
 
     def add_to_buffer(self, task):
         task.env = self.env
@@ -99,10 +103,10 @@ class CPU(object):
             if len(self.buffer.items) == self.buffer.capacity:
                 self.buffer_filled.succeed()
 
-    # def get_from_buffer(self):
-    #
-    #     yield task
-
+    def get_from_buffer(self):
+        task = yield self.buffer.get()
+        print "task #%d is out of buffer. T = %d" % (task.id, task.T)
+        yield task
 
 
 def task_generator(env, cpu, count=itertools.count()):
