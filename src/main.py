@@ -2,9 +2,10 @@ import itertools
 import numpy
 import simpy
 from simpy.core import EmptySchedule
+from simpy.resources.resource import PriorityResource, PriorityRequest
 
 LAMBDA = 10
-SIM_TIME = 1000000000
+SIM_TIME = 1000
 T_PROB_LAW = dict(mu=40, sigma=10)
 DELTA = 9
 N = 5
@@ -13,8 +14,6 @@ D = 1
 
 class Task(object):
     # noinspection PyPep8Naming
-
-
     def __init__(self, env, task_id, T, cpu):
         """
 
@@ -34,7 +33,7 @@ class Task(object):
         print "Started task #%d. T = %d" % (self.id, self.T)
 
     def run(self):
-        with self.cpu.cpu_obj.request() as cpu_obj:
+        with PriorityRequest(self.cpu.cpu_obj, priority=1) as cpu_obj:
             yield cpu_obj
 
             yield self.env.process(self.process())
@@ -62,11 +61,13 @@ class CPU(object):
         """
         super(CPU, self).__init__()
         self.env = env
-        self.cpu_obj = simpy.Resource(env, capacity=1)
+        self.cpu_obj = simpy.PriorityResource(env, capacity=1)
 
-        self.buffer_size = buffer_size
-        self.buffer = simpy.Store(env, buffer_size)  # TODO: make it a priority queue
+        self.queue = simpy.Store(env)  # external queue
+
+        self.buffer = simpy.Store(env, buffer_size)  # internal queue # TODO: make it a priority queue
         self.buffer_filled = env.event()
+
         self.action = env.process(self.run())
 
     def run(self):
@@ -76,7 +77,7 @@ class CPU(object):
             self.buffer_filled = self.env.event()
             print 'Buffer filled'
 
-            with self.cpu_obj.request() as req:
+            with PriorityRequest(self.cpu_obj, priority=0) as req:
                 yield req
                 print 'captured cpu_obj'
 
@@ -116,14 +117,15 @@ def task_generator(env, cpu, count=itertools.count()):
 def main():
     env = simpy.Environment()
     cpu = CPU(env, N-1)
-    env.process(task_generator(env, cpu, range(1, 6)))
+    # env.process(task_generator(env, cpu, range(1, 6)))
+    env.process(task_generator(env, cpu))
 
-    # env.run()
-    try:
-        while True:
-            env.step()
-    except EmptySchedule:
-        print len(cpu.buffer.items)
+    env.run(until=SIM_TIME)
+    # try:
+    #     while True:
+    #         env.step()
+    # except EmptySchedule:
+    #     print len(cpu.buffer.items)
 
 
 if __name__ == "__main__":
