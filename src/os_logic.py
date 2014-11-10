@@ -24,6 +24,7 @@ class Task(SimulationUnit):
 
     def run(self):
         with PriorityRequest(self.cpu.cpu_obj, priority=1) as cpu_obj:
+            self.stats.enqueue_task(self, self.env.now)
             yield cpu_obj
             print 'externally captured cpu_obj'
 
