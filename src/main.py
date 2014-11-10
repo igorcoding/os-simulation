@@ -1,30 +1,36 @@
 import simpy
-from src.os_logic import CPU, task_generator
 
-LAMBDA = 10
-SIM_TIME = 1000
-T_PROB_LAW = dict(mu=40, sigma=10)
-DELTA = 9
-N = 5
-D = 1
+from src.os_simulator import OsSimulator
+from src.stats import GlobalStats
 
 
-def experiment(**params):
+def experiment(stats, simulation_time, **params):
     env = simpy.Environment()
-    cpu = CPU(env, params['DELTA'], params['N'], params['D'])
-    env.process(task_generator(env, cpu, params['LAMBDA'], params['T_PROB_LAW']))
+    simulator = OsSimulator(env, stats, **params)
+    simulator.start()
 
-    env.run(until=SIM_TIME)
+    env.run(until=simulation_time)
 
 
 def main():
-    data1 = dict(DELTA=DELTA, N=N-1, D=D, LAMBDA=LAMBDA, T_PROB_LAW=T_PROB_LAW)
+    gen_lambda = 10
+    sim_time = 1000
+    time_distrib = dict(mu=40, sigma=10)
+    delta = 9
+    n = 5
+    d = 1
+
+    stats = GlobalStats()
+    data1 = dict(delta=delta, buffer_size=n - 1, buffer_latency=d, gen_lambda=gen_lambda,
+                 time_distrib=time_distrib, stats=stats.get_new_stats(), simulation_time=sim_time)
     experiment(**data1)
+    pass
+
     # try:
-    #     while True:
+    # while True:
     #         env.step()
     # except EmptySchedule:
-    #     print len(cpu.buffer.items)
+    #     pass
 
 
 if __name__ == "__main__":
