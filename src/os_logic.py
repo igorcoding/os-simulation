@@ -29,6 +29,8 @@ class Task(SimulationUnit):
             # print 'externally captured cpu_obj'
 
             yield self.env.process(self.execute())
+            if not self.processed():
+                self.stats.entered_inner_task(self, self.env.now)
 
     def execute(self):
         yield self.env.process(self.process())

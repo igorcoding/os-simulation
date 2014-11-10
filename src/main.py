@@ -1,9 +1,8 @@
 import simpy
+import pylab
 
 from src.os_simulator import OsSimulator
-from src.global_stats import BulkStats, GlobalStats
-from src.stats import Stats
-import pylab
+from src.stats.global_stats import GlobalStats
 
 
 def experiment(stats, simulation_time, **params):
@@ -37,17 +36,29 @@ def main():
                             time_distrib=time_distrib, stats=stats, simulation_time=sim_time)
                 experiment(**data)
 
-        plot = results.get_avg_total_time_vs_lambda()
+        plot_total = results.get_avg_total_time_vs_lambda()
+        plot_inner = results.get_avg_inner_time_vs_lambda()
 
-        pylab.plot(*zip(*plot), label='d = %d' % d)
+        pylab.figure(1)
+        pylab.plot(*zip(*plot_total), label='d = %d' % d)
 
+        pylab.figure(2)
+        pylab.plot(*zip(*plot_inner), label='d = %d' % d)
 
-    pylab.legend()
-    pylab.xlabel('lambda')
-    pylab.ylabel('average time')
-    pylab.title('Average time vs lambda')
-    pylab.grid(True)
-    pylab.savefig("test.png")
+    for i in [1, 2]:
+        pylab.figure(i)
+        pylab.legend()
+        pylab.xlabel('lambda')
+        pylab.ylabel('average time')
+        pylab.grid(True)
+
+    pylab.figure(1)
+    pylab.title('Average total time vs lambda')
+    pylab.savefig("avg_total.png")
+
+    pylab.figure(2)
+    pylab.title('Average inner time vs lambda')
+    pylab.savefig("avg_inner.png")
         # pylab.show()
 
     pass

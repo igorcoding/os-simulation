@@ -4,6 +4,7 @@ class Stats(object):
         PROCESSED = 'processed'
         FINISHED = 'finished'
         ENQUEUED = 'enqueued'
+        ENTERED_INNER = 'inner'
         BUFFERED = 'buffered'
         UNBUFFERED = 'unbuffered'
 
@@ -61,6 +62,9 @@ class Stats(object):
 
     def enqueue_task(self, task, time):
         self._add_task_event(self.TaskEvents.ENQUEUED, task, time)
+
+    def entered_inner_task(self, task, time):
+        self._add_task_event(self.TaskEvents.ENTERED_INNER, task, time)
 
     def buffered_task(self, task, time):
         self._add_task_event(self.TaskEvents.BUFFERED, task, time)
