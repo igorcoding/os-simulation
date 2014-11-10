@@ -49,24 +49,24 @@ class Stats(object):
 
     def started_task(self, task, time):
         self._add_task_event(self.TaskEvents.STARTED, task, time)
-        print "Started task #%d. T = %d; time = %f" % (task.id, task.T, time)
+        # print "Started task #%d. T = %d; time = %f" % (task.id, task.T, time)
 
     def processed_task(self, task, time):
         self._add_task_event(self.TaskEvents.PROCESSED, task, time)
-        print "Processed task #%d. T = %d" % (task.id, task.T)
+        # print "Processed task #%d. T = %d" % (task.id, task.T)
 
     def finished_task(self, task, time):
         self._add_task_event(self.TaskEvents.FINISHED, task, time)
-        print "Finished task #%d. T = %d" % (task.id, task.T)
+        # print "Finished task #%d. T = %d" % (task.id, task.T)
 
     def enqueue_task(self, task, time):
         self._add_task_event(self.TaskEvents.ENQUEUED, task, time)
 
     def buffered_task(self, task, time):
         self._add_task_event(self.TaskEvents.BUFFERED, task, time)
-        print "task #%d in buffer. T = %d" % (task.id, task.T)
+        # print "task #%d in buffer. T = %d" % (task.id, task.T)
 
     def unbuffered_task(self, task, time):
         self._add_task_event(self.TaskEvents.UNBUFFERED, task, time)
-        print "task #%d is out of buffer. T = %d" % (task.id, task.T)
+        # print "task #%d is out of buffer. T = %d" % (task.id, task.T)
 

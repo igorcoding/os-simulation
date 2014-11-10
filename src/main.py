@@ -2,6 +2,8 @@ import simpy
 
 from src.os_simulator import OsSimulator
 from src.global_stats import BulkStats, GlobalStats
+from src.stats import Stats
+import pylab
 
 
 def experiment(stats, simulation_time, **params):
@@ -13,38 +15,40 @@ def experiment(stats, simulation_time, **params):
 
 
 def main():
-    gen_lambda = 10
+    # gen_lambda = 10
     sim_time = 1000
     time_distrib = dict(mu=40, sigma=10)
     delta = 9
     n = 5
-    d = 1
+    # d = 1
 
     experiments_count = 10
 
-    results = GlobalStats()
+    for d in xrange(1, 22, 5):
+        print d
+        results = GlobalStats()
 
-    for l in xrange(1, 101):
-        bulk_stats = results.get_new_bulk_stats(gen_lambda=l)
+        for l in xrange(1, 101):
+            bulk_stats = results.get_new_bulk_stats(gen_lambda=l)
 
-        for _ in xrange(experiments_count):
-            stats = bulk_stats.get_new_stats()
-            data = dict(delta=delta, buffer_size=n - 1, buffer_latency=d, gen_lambda=l,
-                        time_distrib=time_distrib, stats=stats, simulation_time=sim_time)
-            experiment(**data)
+            for _ in xrange(experiments_count):
+                stats = bulk_stats.get_new_stats()
+                data = dict(delta=delta, buffer_size=n - 1, buffer_latency=d, gen_lambda=l,
+                            time_distrib=time_distrib, stats=stats, simulation_time=sim_time)
+                experiment(**data)
 
-    plot = results.get_avg_total_time_vs_lambda()
+        plot = results.get_avg_total_time_vs_lambda()
 
-    import pylab
-    # pl =
-    pylab.plot(*zip(*plot))
+        pylab.plot(*zip(*plot), label='d = %d' % d)
 
+
+    pylab.legend()
     pylab.xlabel('lambda')
     pylab.ylabel('average time')
     pylab.title('Average time vs lambda')
     pylab.grid(True)
     pylab.savefig("test.png")
-    pylab.show()
+        # pylab.show()
 
     pass
 

@@ -27,20 +27,20 @@ class GlobalStats:
 
 class BulkStats:
     def __init__(self, **info):
-        self._experiments = []
+        self.experiments = []
         self.info = info
 
     def get_new_stats(self):
-        self._experiments.append(Stats())
-        return self._experiments[-1]
+        self.experiments.append(Stats())
+        return self.experiments[-1]
 
     def get_stats_at(self, experiment_id):
-        return self._experiments[experiment_id]
+        return self.experiments[experiment_id]
 
     def get_avg_total_time(self):
         total_avg_time = 0.0
         exp_count = 0
-        for exp in self._experiments:
+        for exp in self.experiments:
             exp_has_data = False
 
             avg_time = 0.0

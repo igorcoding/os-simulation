@@ -26,7 +26,7 @@ class Task(SimulationUnit):
         with PriorityRequest(self.cpu.cpu_obj, priority=1) as cpu_obj:
             self.stats.enqueue_task(self, self.env.now)
             yield cpu_obj
-            print 'externally captured cpu_obj'
+            # print 'externally captured cpu_obj'
 
             yield self.env.process(self.execute())
 
@@ -72,14 +72,14 @@ class CPU(SimulationUnit):
 
     def run(self):
         while True:
-            print 'Waiting buffer to fill'
+            # print 'Waiting buffer to fill'
             yield self.buffer_filled
             self.buffer_filled = self.env.event()
-            print 'Buffer filled'
+            # print 'Buffer filled'
 
             with PriorityRequest(self.cpu_obj, priority=0) as req:
                 yield req
-                print 'captured cpu_obj'
+                # print 'captured cpu_obj'
 
                 task = yield self.env.process(self.get_from_buffer())
 
