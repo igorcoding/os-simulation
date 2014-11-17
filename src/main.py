@@ -13,61 +13,55 @@ def experiment(stats, simulation_time, **params):
     env.run(until=simulation_time)
 
 
-def main():
-    # gen_lambda = 10
-    sim_time = 1000
+def generate_configs(d_range, l_range):
     time_distrib = dict(mu=40, sigma=10)
     delta = 9
     n = 5
-    # d = 1
 
-    experiments_count = 10
+    configs = []
+    for d in d_range:
+        for l in l_range:
+            config = dict(delta=delta, buffer_size=n - 1, buffer_latency=d, gen_lambda=l,
+                          time_distrib=time_distrib)
+            configs.append(config)
 
-    for d in xrange(1, 22, 5):
-        print d
-        results = GlobalStats()
+    return configs
 
-        for l in xrange(1, 101):
-            bulk_stats = results.get_new_bulk_stats(gen_lambda=l)
 
-            for _ in xrange(experiments_count):
-                stats = bulk_stats.get_new_stats()
-                data = dict(delta=delta, buffer_size=n - 1, buffer_latency=d, gen_lambda=l,
-                            time_distrib=time_distrib, stats=stats, simulation_time=sim_time)
-                experiment(**data)
+def main():
+    sim_time = 1000
+    experiments_per_conf = 10
+    d_range = xrange(1, 22, 5)
+    l_range = xrange(1, 101)
 
-        plot_total = results.get_avg_total_time_vs_lambda()
-        plot_inner = results.get_avg_inner_time_vs_lambda()
+    results = GlobalStats()
 
-        pylab.figure(1)
-        pylab.plot(*zip(*plot_total), label='d = %d' % d)
+    configs = generate_configs(d_range, l_range)
+    for conf in configs:
+        bulk_stats = results.get_new_bulk_stats(**conf)
+        for _ in xrange(experiments_per_conf):
+            stats = bulk_stats.get_new_stats()
+            experiment(stats, sim_time, **conf)
 
-        pylab.figure(2)
-        pylab.plot(*zip(*plot_inner), label='d = %d' % d)
+    for d in d_range:
+        plot_total = results.get_avg_total_time_vs_lambda(d)
+        plot_inner = results.get_avg_inner_time_vs_lambda(d)
+        plots = [
+            dict(title='Average total time vs lambda', file='avg_total.png', points=plot_total),
+            dict(title='Average inner time vs lambda', file='avg_inner.png', points=plot_inner),
+        ]
 
-    for i in [1, 2]:
-        pylab.figure(i)
-        pylab.legend()
-        pylab.xlabel('lambda')
-        pylab.ylabel('average time')
-        pylab.grid(True)
+        for i, p in enumerate(plots):
+            pylab.figure(i)
+            pylab.plot(*zip(*p['points']), label='d = %d' % d)
 
-    pylab.figure(1)
-    pylab.title('Average total time vs lambda')
-    pylab.savefig("avg_total.png")
+            pylab.legend()
+            pylab.xlabel('lambda')
+            pylab.ylabel('average time')
+            pylab.grid(True)
 
-    pylab.figure(2)
-    pylab.title('Average inner time vs lambda')
-    pylab.savefig("avg_inner.png")
-        # pylab.show()
-
-    pass
-
-    # try:
-    # while True:
-    #         env.step()
-    # except EmptySchedule:
-    #     pass
+            pylab.title(p['title'])
+            pylab.savefig(p['file'])
 
 
 if __name__ == "__main__":

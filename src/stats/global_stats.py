@@ -10,23 +10,22 @@ class GlobalStats:
         self.bulks.append(BulkStats(**info))
         return self.bulks[-1]
 
-    def get_avg_total_time_vs_lambda(self):
-        return self.get_avg_time_vs_lambda(BulkStats.get_avg_total_time.__name__)
+    def get_avg_total_time_vs_lambda(self, buffer_latency):
+        return self.get_avg_time_vs_lambda(BulkStats.get_avg_total_time.__name__, buffer_latency)
 
-    def get_avg_inner_time_vs_lambda(self):
-        return self.get_avg_time_vs_lambda(BulkStats.get_avg_inner_time.__name__)
+    def get_avg_inner_time_vs_lambda(self, buffer_latency):
+        return self.get_avg_time_vs_lambda(BulkStats.get_avg_inner_time.__name__, buffer_latency)
 
-    def get_avg_time_vs_lambda(self, avg_time_func_name):
+    def get_avg_time_vs_lambda(self, avg_time_func_name, buffer_latency):
         points = []
         for bulk in self.bulks:
+            if 'buffer_latency' not in bulk.info or 'gen_lambda' not in bulk.info:
+                raise Exception('No data to operate with')
 
-            if 'gen_lambda' in bulk.info:
+            if bulk.info['buffer_latency'] == buffer_latency:
                 avg_time = getattr(bulk, avg_time_func_name)()
                 gen_lambda = bulk.info['gen_lambda']
                 points.append((gen_lambda, avg_time))
-
-            else:
-                raise Exception('No lambda to operate with')
 
         return points
 
