@@ -1,7 +1,9 @@
 import itertools
+
 import numpy
-from src.simulation_unit import SimulationUnit
-from src.os_logic import Task
+
+from src.sim.simulation_unit import SimulationUnit
+from src.sim.os_logic import Task
 
 
 class TaskGenerator(SimulationUnit):

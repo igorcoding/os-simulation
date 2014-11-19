@@ -1,6 +1,6 @@
-from src.os_logic import CPU
-from src.simulation_unit import SimulationUnit
-from src.task_generator import TaskGenerator
+from src.sim.os_logic import CPU
+from src.sim.simulation_unit import SimulationUnit
+from src.sim.task_generator import TaskGenerator
 
 
 class OsSimulator(SimulationUnit):

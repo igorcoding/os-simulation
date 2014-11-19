@@ -1,8 +1,8 @@
 import simpy
 from simpy.resources.resource import PriorityRequest
 
-from src.PriorityStore import PriorityStore
-from src.simulation_unit import SimulationUnit
+from src.sim.PriorityStore import PriorityStore
+from src.sim.simulation_unit import SimulationUnit
 
 
 class Task(SimulationUnit):

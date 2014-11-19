@@ -1,7 +1,7 @@
 import simpy
 import pylab
 
-from src.os_simulator import OsSimulator
+from src.sim.os_simulator import OsSimulator
 from src.stats.global_stats import GlobalStats
 
 
@@ -13,37 +13,28 @@ def experiment(stats, simulation_time, **params):
     env.run(until=simulation_time)
 
 
-def generate_configs(d_range, l_range):
-    time_distrib = dict(mu=40, sigma=10)
-    delta = 9
-    n = 5
-
+def generate_configs(data):
     configs = []
-    for d in d_range:
-        for l in l_range:
-            config = dict(delta=delta, buffer_size=n - 1, buffer_latency=d, gen_lambda=l,
-                          time_distrib=time_distrib)
+    for d in data['buffer_latency']:
+        for l in data['gen_lambda']:
+            config = dict(delta=data['delta'], buffer_size=data['buffer_size'] - 1, buffer_latency=d,
+                          gen_lambda=l, time_distrib=data['time_distrib'])
             configs.append(config)
 
     return configs
 
 
-def main():
-    sim_time = 1000
-    experiments_per_conf = 10
-    d_range = xrange(1, 22, 5)
-    l_range = xrange(1, 101)
-
+def simulation(**data):
     results = GlobalStats()
 
-    configs = generate_configs(d_range, l_range)
+    configs = generate_configs(data)
     for conf in configs:
         bulk_stats = results.get_new_bulk_stats(**conf)
-        for _ in xrange(experiments_per_conf):
+        for _ in xrange(data['exp_per_conf']):
             stats = bulk_stats.get_new_stats()
-            experiment(stats, sim_time, **conf)
+            experiment(stats, data['sim_time'], **conf)
 
-    for d in d_range:
+    for d in data['buffer_latency']:
         plot_total = results.get_avg_total_time_vs_lambda(d)
         plot_inner = results.get_avg_inner_time_vs_lambda(d)
         plots = [
@@ -62,6 +53,19 @@ def main():
 
             pylab.title(p['title'])
             pylab.savefig(p['file'])
+
+
+def main():
+    data = {
+        'sim_time': 1000,
+        'exp_per_conf': 1,
+        'buffer_latency': xrange(1, 22, 5),
+        'gen_lambda': xrange(1, 101),
+        'buffer_size': 5,
+        'delta': 9,
+        'time_distrib': dict(mu=40, sigma=10)
+    }
+    simulation(**data)
 
 
 if __name__ == "__main__":

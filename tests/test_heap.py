@@ -1,5 +1,6 @@
 from unittest import TestCase
-from src.PriorityStore import Heap
+
+from src.sim.PriorityStore import Heap
 
 
 class TestHeap(TestCase):
