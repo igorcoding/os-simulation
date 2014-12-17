@@ -1,4 +1,4 @@
-from gi.repository import Gtk, GLib, GObject
+from gi.repository import Gtk, Gdk, GLib, GObject, GdkPixbuf
 from src.simulation import simulation
 from threading import Thread, Event
 
@@ -46,11 +46,26 @@ class OsSimulatorWindow(object):
         self.exp_per_conf_text = builder.get_object('exp_per_conf_text')
         self.sim_finished_event = Event()
 
+        self.images_box = builder.get_object('images_box')
+        self.images = {
+            'inner': builder.get_object('avg_inner_plot'),
+            'total': builder.get_object('avg_total_plot'),
+        }
+
+        self.simulation_thread = None
+        self.simulation_finished = False
+
     def show(self):
         self.window.show_all()
 
-    @staticmethod
-    def on_os_simulator_window_destroy(*args):
+    def on_os_simulator_window_configure_event(self, *args):
+        if self.simulation_finished:
+            self._draw_images()
+
+    def on_os_simulator_window_destroy(self, *args):
+        if self.simulation_thread is not None:
+            # self.simulation_thread.stop()
+            pass
         Gtk.main_quit(*args)
 
     def on_simulate_button_clicked(self, *args):
@@ -74,11 +89,13 @@ class OsSimulatorWindow(object):
                         exp_per_conf=exp_per_conf)
 
             def target():
+                print 'Simulation started'
+                self.simulation_finished = False
                 simulation(**data)
-                GLib.idle_add(self.display_dialog, "Info", "finished")
+                GLib.idle_add(self.on_simulation_finished)
 
-            th = Thread(target=target)
-            th.start()
+            self.simulation_thread = Thread(target=target)
+            self.simulation_thread.start()
 
         except ValueError as e:
             self.display_dialog('Error', 'Incorrect data')
@@ -93,6 +110,27 @@ class OsSimulatorWindow(object):
             print("The OK button was clicked")
 
         dialog.destroy()
+
+    def on_simulation_finished(self):
+        print 'Simulation finished'
+        self.simulation_finished = True
+        self.display_dialog("Info", "finished")
+
+        self._draw_images()
+
+    def _draw_images(self):
+        rect = self.images_box.get_allocation()
+        width = rect.width
+        height = rect.height / 2
+
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file('avg_inner.png')
+        pixbuf = pixbuf.scale_simple(width, height, GdkPixbuf.InterpType.BILINEAR)
+        self.images['inner'].set_from_pixbuf(pixbuf)
+
+
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file('avg_total.png')
+        pixbuf = pixbuf.scale_simple(width, height, GdkPixbuf.InterpType.BILINEAR)
+        self.images['total'].set_from_pixbuf(pixbuf)
 
 
 if __name__ == "__main__":
