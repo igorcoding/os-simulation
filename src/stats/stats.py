@@ -12,35 +12,41 @@ class Stats(object):
         STARTED = 'started'
         FINISHED = 'finished'
 
-    def __init__(self, **info):
+    def __init__(self, tracking_events, **info):
         super(Stats, self).__init__()
         self.tasks_events = {}
         self.system_events = {}
+        self.tracking_events = tracking_events
         self.info = info
 
     def _add_task_event(self, event_type, task, time):
         if task.id not in self.tasks_events:
             self.tasks_events[task.id] = []
-        self.tasks_events[task.id].append({
-            'event_type': event_type,
-            'task': task,
-            'time': time
-        })
+        if event_type in self.tracking_events:
+            self.tasks_events[task.id].append({
+                'event_type': event_type,
+                'task': task,
+                'time': time
+            })
 
     def _add_system_event(self, event_type, time):
         if event_type not in self.tasks_events:
             self.tasks_events[event_type] = []
-        self.tasks_events[event_type].append({
-            'time': time
-        })
+
+        if event_type in self.tracking_events:
+            self.tasks_events[event_type].append({
+                'time': time
+            })
 
     def get_task_events(self, task_id, event_type):
+        if event_type not in self.tracking_events:
+            raise Exception('%s event is not being tracked' % event_type)
+
         if task_id in self.tasks_events:
             events = [e for e in self.tasks_events[task_id] if e['event_type'] == event_type]
             if len(events) == 0:
                 return None
             return events
-
 
     def started(self, time):
         self._add_system_event(self.SystemEvents.STARTED, time)

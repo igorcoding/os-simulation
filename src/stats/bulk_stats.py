@@ -2,12 +2,15 @@ from src.stats.stats import Stats
 
 
 class BulkStats:
+    TRACKING_EVENTS = [Stats.TaskEvents.ENQUEUED, Stats.TaskEvents.FINISHED,
+                       Stats.TaskEvents.ENTERED_INNER, Stats.TaskEvents.FINISHED]
+
     def __init__(self, **info):
         self.experiments = []
         self.info = info
 
     def get_new_stats(self):
-        self.experiments.append(Stats())
+        self.experiments.append(Stats(tracking_events=self.TRACKING_EVENTS))
         return self.experiments[-1]
 
     def get_stats_at(self, experiment_id):

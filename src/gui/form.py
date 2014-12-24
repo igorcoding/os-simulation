@@ -1,4 +1,6 @@
+import os
 from gi.repository import Gtk, Gdk, GLib, GObject, GdkPixbuf
+import math
 from src.simulation import simulation
 from threading import Thread, Event
 
@@ -21,6 +23,9 @@ class Dialog(Gtk.Dialog):
 
 
 class OsSimulatorWindow(object):
+    AVG_INNER_PLOT = 'avg_inner.png'
+    AVG_TOTAL_PLOT = 'avg_total.png'
+
     def __init__(self, builder):
         super(OsSimulatorWindow, self).__init__()
         self.builder = builder
@@ -89,8 +94,7 @@ class OsSimulatorWindow(object):
                         exp_per_conf=exp_per_conf)
 
             def target():
-                print 'Simulation started'
-                self.simulation_finished = False
+                self.on_simulation_started()
                 simulation(**data)
                 GLib.idle_add(self.on_simulation_finished)
 
@@ -111,6 +115,12 @@ class OsSimulatorWindow(object):
 
         dialog.destroy()
 
+    def on_simulation_started(self):
+        print 'Simulation started'
+        self.simulation_finished = False
+        os.remove(self.AVG_INNER_PLOT)
+        os.remove(self.AVG_TOTAL_PLOT)
+
     def on_simulation_finished(self):
         print 'Simulation finished'
         self.simulation_finished = True
@@ -123,14 +133,23 @@ class OsSimulatorWindow(object):
         width = rect.width
         height = rect.height / 2
 
-        pixbuf = GdkPixbuf.Pixbuf.new_from_file('avg_inner.png')
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file(self.AVG_INNER_PLOT)
         pixbuf = pixbuf.scale_simple(width, height, GdkPixbuf.InterpType.BILINEAR)
         self.images['inner'].set_from_pixbuf(pixbuf)
 
-
-        pixbuf = GdkPixbuf.Pixbuf.new_from_file('avg_total.png')
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file(self.AVG_TOTAL_PLOT)
         pixbuf = pixbuf.scale_simple(width, height, GdkPixbuf.InterpType.BILINEAR)
         self.images['total'].set_from_pixbuf(pixbuf)
+
+    @staticmethod
+    def _float_range(first, last, step):
+        eps = 0.00001
+        l = []
+        current = first
+        while math.fabs(current - last) >= eps:
+            l.append(current)
+            current += step
+        return l
 
 
 if __name__ == "__main__":

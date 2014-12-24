@@ -28,12 +28,16 @@ def simulation(**data):
     results = GlobalStats()
 
     configs = generate_configs(data)
-    for conf in configs:
+    for i, conf in enumerate(configs):
+        print "Running configuration %d/%d" % (i+1, len(configs))
         bulk_stats = results.get_new_bulk_stats(**conf)
-        for _ in xrange(data['exp_per_conf']):
+        for j in xrange(data['exp_per_conf']):
+            print "%d/%d" % (j+1, data['exp_per_conf']),
             stats = bulk_stats.get_new_stats()
             experiment(stats, data['sim_time'], **conf)
+        print
 
+    pylab.clf()
     for d in data['buffer_latency']:
         plot_total = results.get_avg_total_time_vs_lambda(d)
         plot_inner = results.get_avg_inner_time_vs_lambda(d)
@@ -53,6 +57,7 @@ def simulation(**data):
 
             pylab.title(p['title'])
             pylab.savefig(p['file'])
+    pylab.close()
 
 
 def main():
