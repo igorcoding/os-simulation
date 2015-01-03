@@ -19,6 +19,11 @@ class Stats(object):
         self.tracking_events = tracking_events
         self.info = info
 
+    def __del__(self):
+        # print 'Stats.__del__'
+        del self.tasks_events
+        del self.system_events
+
     def _add_task_event(self, event_type, task, time):
         if task.id not in self.tasks_events:
             self.tasks_events[task.id] = []

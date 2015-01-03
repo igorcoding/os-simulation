@@ -2,9 +2,14 @@ import numpy
 from src.stats.bulk_stats import BulkStats
 
 
-class GlobalStats:
+class GlobalStats(object):
     def __init__(self):
+        super(GlobalStats, self).__init__()
         self.bulks = []
+
+    def __del__(self):
+        # print 'GlobalStats.__del__'
+        del self.bulks
 
     def get_new_bulk_stats(self, **info):
         self.bulks.append(BulkStats(**info))

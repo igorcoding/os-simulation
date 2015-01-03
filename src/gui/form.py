@@ -1,7 +1,7 @@
 import os
 from gi.repository import Gtk, Gdk, GLib, GObject, GdkPixbuf
 import math
-from src.simulation import simulation
+from src.simulation import Simulation
 from threading import Thread, Event
 
 
@@ -95,7 +95,7 @@ class OsSimulatorWindow(object):
 
             def target():
                 self.on_simulation_started()
-                simulation(**data)
+                Simulation().simulation(**data)
                 GLib.idle_add(self.on_simulation_finished)
 
             self.simulation_thread = Thread(target=target)
@@ -118,8 +118,10 @@ class OsSimulatorWindow(object):
     def on_simulation_started(self):
         print 'Simulation started'
         self.simulation_finished = False
-        os.remove(self.AVG_INNER_PLOT)
-        os.remove(self.AVG_TOTAL_PLOT)
+        if os.path.isfile(self.AVG_INNER_PLOT):
+            os.remove(self.AVG_INNER_PLOT)
+        if os.path.isfile(self.AVG_TOTAL_PLOT):
+            os.remove(self.AVG_TOTAL_PLOT)
 
     def on_simulation_finished(self):
         print 'Simulation finished'

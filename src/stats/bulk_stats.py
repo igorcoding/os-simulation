@@ -1,13 +1,19 @@
 from src.stats.stats import Stats
 
 
-class BulkStats:
+class BulkStats(object):
     TRACKING_EVENTS = [Stats.TaskEvents.ENQUEUED, Stats.TaskEvents.FINISHED,
                        Stats.TaskEvents.ENTERED_INNER, Stats.TaskEvents.FINISHED]
 
     def __init__(self, **info):
+        super(BulkStats, self).__init__()
         self.experiments = []
         self.info = info
+
+    def __del__(self):
+        # print 'BulkStats.__del__'
+
+        del self.experiments
 
     def get_new_stats(self):
         self.experiments.append(Stats(tracking_events=self.TRACKING_EVENTS))
@@ -48,5 +54,7 @@ class BulkStats:
                 total_avg_time += avg_time
                 exp_count += 1
 
-        total_avg_time /= exp_count
-        return total_avg_time
+        if exp_count != 0:
+            total_avg_time /= exp_count
+            return total_avg_time
+        return 0
