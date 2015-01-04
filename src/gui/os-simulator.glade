@@ -20,7 +20,7 @@
               <object class="GtkLabel" id="delta_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Quant delta</property>
+                <property name="label" translatable="yes">Квант Δ</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -45,7 +45,7 @@
               <object class="GtkLabel" id="buffer_latency_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Buffer latency</property>
+                <property name="label" translatable="yes">Задержка буфера</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -57,7 +57,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="xalign">0.4699999988079071</property>
-                <property name="label" translatable="yes">Lambda (λ)</property>
+                <property name="label" translatable="yes">Лямбда (λ)</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -96,7 +96,7 @@
                   <object class="GtkLabel" id="buffer_latency_step_label">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">step</property>
+                    <property name="label" translatable="yes">шаг</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -181,7 +181,7 @@
                   <object class="GtkLabel" id="lambda_step_label">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">step</property>
+                    <property name="label" translatable="yes">шаг</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -236,7 +236,7 @@
               <object class="GtkLabel" id="buffer_size_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Buffer size</property>
+                <property name="label" translatable="yes">Размер буфера</property>
                 <property name="ellipsize">start</property>
               </object>
               <packing>
@@ -306,7 +306,7 @@
               <object class="GtkLabel" id="solve_time_distrib_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Solve time distribution</property>
+                <property name="label" translatable="yes">Время решения задачи</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -380,7 +380,7 @@
               <object class="GtkLabel" id="simulation_time_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Simulation time</property>
+                <property name="label" translatable="yes">Продолжительность симуляции</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -416,7 +416,8 @@
               <object class="GtkLabel" id="exp_per_conf_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Expirements per configuration</property>
+                <property name="label" translatable="yes">Число экспериментов 
+   на конфигурацию</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -436,11 +437,12 @@
             </child>
             <child>
               <object class="GtkButton" id="simulate_button">
-                <property name="label" translatable="yes">Simulate!</property>
+                <property name="label" translatable="yes">Начать симуляцию</property>
                 <property name="height_request">50</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="relief">none</property>
                 <signal name="clicked" handler="on_simulate_button_clicked" swapped="no"/>
               </object>
               <packing>
@@ -455,7 +457,7 @@
           <object class="GtkLabel" id="settings_tab_label">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Settings</property>
+            <property name="label" translatable="yes">Настройки</property>
           </object>
           <packing>
             <property name="tab_fill">False</property>
@@ -499,32 +501,10 @@
           <object class="GtkLabel" id="results_tab_label">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Plots</property>
+            <property name="label" translatable="yes">Графики</property>
           </object>
           <packing>
             <property name="position">1</property>
-            <property name="tab_fill">False</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="button1">
-            <property name="label" translatable="yes">button</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-          </object>
-          <packing>
-            <property name="position">2</property>
-          </packing>
-        </child>
-        <child type="tab">
-          <object class="GtkLabel" id="label1">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Results</property>
-          </object>
-          <packing>
-            <property name="position">2</property>
             <property name="tab_fill">False</property>
           </packing>
         </child>

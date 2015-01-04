@@ -1,3 +1,4 @@
+# coding=utf-8
 import simpy
 import pylab
 
@@ -42,13 +43,14 @@ class Simulation(object):
                 self._experiment(stats, data['sim_time'], **conf)
             print
 
+        pylab.matplotlib.rc('font', family='Arial')
         pylab.clf()
         for d in data['buffer_latency']:
             plot_total = results.get_avg_total_time_vs_lambda(d)
             plot_inner = results.get_avg_inner_time_vs_lambda(d)
             plots = [
-                dict(title='Average total time vs lambda', file='avg_total.png', points=plot_total),
-                dict(title='Average inner time vs lambda', file='avg_inner.png', points=plot_inner),
+                dict(title=u'Среднее общее время пребывания задания (внешняя очередь + система)', file='avg_total.png', points=plot_total),
+                dict(title=u'Среднее время пребывания задания в системе', file='avg_inner.png', points=plot_inner),
             ]
 
             for i, p in enumerate(plots):
@@ -56,8 +58,8 @@ class Simulation(object):
                 pylab.plot(*zip(*p['points']), label='d = %d' % d)
 
                 pylab.legend()
-                pylab.xlabel('lambda')
-                pylab.ylabel('average time')
+                pylab.xlabel(u'λ')
+                pylab.ylabel(u'Время')
                 pylab.grid(True)
 
                 pylab.title(p['title'])

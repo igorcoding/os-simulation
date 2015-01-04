@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>Python</ID>
+  <OriginalElement>#/home/igor/Projects/python/os-simulation/src</OriginalElement>
+  <nodes>
+    <node x="244.0" y="303.0">src.sim.os_logic.CPU</node>
+    <node x="305.75" y="226.0">src.sim.simulation_unit.SimulationUnit</node>
+    <node x="276.66611612247493" y="366.75009528649474">src.stats.global_stats.GlobalStats</node>
+    <node x="415.0" y="303.0">src.sim.task_generator.TaskGenerator</node>
+    <node x="605.8263880066067" y="533.4956168212424">src.sim.PriorityStore.PriorityStore</node>
+    <node x="623.8263880066067" y="456.49561682124244">simpy.resources.store.Store</node>
+    <node x="0.0" y="303.0">src.sim.os_simulator.OsSimulator</node>
+    <node x="28.0" y="375.0">_abcoll.Sized</node>
+    <node x="277.7467920213442" y="410.8354719857705">src.stats.bulk_stats.BulkStats</node>
+    <node x="278.24965061618605" y="456.6682759496888">src.stats.stats.Stats</node>
+    <node x="0.0" y="560.7512387244315">src.gui.form.Dialog</node>
+    <node x="0.0" y="452.0">src.sim.PriorityStore.Heap</node>
+    <node x="689.0" y="303.0">src.sim.os_logic.Task</node>
+    <node x="601.3263880066067" y="379.49561682124244">simpy.resources.base.BaseResource</node>
+    <node x="0.0" y="524.0">src.gui.form.OsSimulatorWindow</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="src.sim.PriorityStore.PriorityStore" target="simpy.resources.store.Store">
+      <point x="0.0" y="-13.5" />
+      <point x="0.0" y="13.5" />
+    </edge>
+    <edge source="src.sim.PriorityStore.Heap" target="_abcoll.Sized">
+      <point x="0.0" y="-13.5" />
+      <point x="0.0" y="13.5" />
+    </edge>
+    <edge source="src.sim.os_logic.CPU" target="src.sim.simulation_unit.SimulationUnit">
+      <point x="0.0" y="-13.5" />
+      <point x="319.5" y="283.0" />
+      <point x="399.5" y="283.0" />
+      <point x="-31.25" y="13.5" />
+    </edge>
+    <edge source="src.sim.os_logic.Task" target="src.sim.simulation_unit.SimulationUnit">
+      <point x="0.0" y="-13.5" />
+      <point x="765.0" y="273.0" />
+      <point x="524.5" y="273.0" />
+      <point x="93.75" y="13.5" />
+    </edge>
+    <edge source="src.sim.os_simulator.OsSimulator" target="src.sim.simulation_unit.SimulationUnit">
+      <point x="0.0" y="-13.5" />
+      <point x="112.0" y="273.0" />
+      <point x="337.0" y="273.0" />
+      <point x="-93.75" y="13.5" />
+    </edge>
+    <edge source="simpy.resources.store.Store" target="simpy.resources.base.BaseResource">
+      <point x="0.0" y="-13.5" />
+      <point x="0.0" y="13.5" />
+    </edge>
+    <edge source="src.sim.task_generator.TaskGenerator" target="src.sim.simulation_unit.SimulationUnit">
+      <point x="0.0" y="-13.5" />
+      <point x="542.0" y="283.0" />
+      <point x="462.0" y="283.0" />
+      <point x="31.25" y="13.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0909216909216908" x="436.95305552026434" y="439.83013594206585" />
+  <SelectedNodes />
+  <Categories />
+</Diagram>
+

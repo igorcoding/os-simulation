@@ -18,8 +18,13 @@ class TaskGenerator(SimulationUnit):
         self.tasks_ids = tasks_ids
 
     def run(self):
+        t_left = self.time_distrib['mu'] - 3 * self.time_distrib['sigma']
+        t_right = self.time_distrib['mu'] + 3 * self.time_distrib['sigma']
+        if t_left < 0:
+            t_left = 1
         for i in self.tasks_ids:
             yield self.env.timeout(numpy.random.poisson(self.gen_lambda))
-            t = int(numpy.random.normal(self.time_distrib['mu'], self.time_distrib['sigma']))
+
+            t = int(numpy.random.triangular(t_left, self.time_distrib['mu'], t_right))
             t = Task(self.env, self.stats, i, t, self.cpu)
             t.start()
